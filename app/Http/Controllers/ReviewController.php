@@ -31,7 +31,7 @@ class ReviewController extends Controller
             'product_id' => $product->id,
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
-            'status' => 'menunggu_persetujuan',
+            'status' => 'sudah_upload',
         ]);
 
         return back()->with('success', 'Ulasan Anda berhasil ditambahkan');

@@ -359,7 +359,9 @@ const userReview = computed(() => {
                                             <input
                                                 type="number"
                                                 v-model="quantity"
-                                                class="w-12 text-center border-none bg-transparent focus:ring-0 dark:text-gray-100"
+                                                min="1"
+                                                :max="product.stock"
+                                                class="w-16 text-center border-none bg-transparent focus:ring-0 dark:text-gray-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                             />
                                             <button
                                                 @click="
