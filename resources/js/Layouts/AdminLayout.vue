@@ -47,12 +47,7 @@ const menuItems = [
         label: "Dashboard Ulasan",
         icon: "⭐",
         children: [
-            {
-                label: "Ulasan Masuk",
-                route: "admin.reviews.incoming",
-                icon: "📝",
-            },
-            { label: "Data Ulasan", route: "admin.reviews.index", icon: "📊" },
+            { label: "Data Ulasan", route: "admin.reviews.index", icon: "📋" },
         ],
     },
     {
