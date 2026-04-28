@@ -176,7 +176,7 @@ const menuItems = [
                                 class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600"
                             >
                                 {{
-                                    page.props.auth.user.name
+                                    page.props.auth.admin.name
                                         .charAt(0)
                                         .toUpperCase()
                                 }}
@@ -185,7 +185,7 @@ const menuItems = [
                                 <p
                                     class="text-sm font-semibold text-gray-900 dark:text-gray-100"
                                 >
-                                    {{ page.props.auth.user.name }}
+                                    {{ page.props.auth.admin.name }}
                                 </p>
                                 <p class="text-xs text-gray-500">Admin</p>
                             </div>
@@ -195,7 +195,7 @@ const menuItems = [
                             class="border-l border-gray-100 dark:border-gray-800 pl-4"
                         >
                             <Link
-                                :href="route('logout')"
+                                :href="route('admin.logout')"
                                 method="post"
                                 as="button"
                                 class="text-sm font-semibold text-red-600 hover:text-red-700 transition"

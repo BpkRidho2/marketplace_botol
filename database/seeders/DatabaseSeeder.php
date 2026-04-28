@@ -36,10 +36,11 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->count(25)->create();
 
-        $this->call([
-            CategorySeeder::class,
-            ProductSeeder::class,
-            ReviewSeeder::class,
-        ]);
+$this->call([
+    AdminSeeder::class,   // Akun admin pertama
+    CategorySeeder::class,
+    ProductSeeder::class,
+    ReviewSeeder::class,
+]);
     }
 }

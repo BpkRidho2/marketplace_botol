@@ -1,4 +1,4 @@
-profile<?php
+<?php
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
@@ -8,12 +8,19 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// ============================================================
+// Public Routes (tidak perlu login)
+// ============================================================
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/dashboard', function () {
     return redirect()->route('home');
 })->middleware(['auth'])->name('dashboard');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/shops/{shop:slug}', [App\Http\Controllers\ShopController::class, 'show'])->name('shops.show');
 
+// ============================================================
+// User Routes (harus login sebagai user biasa)
+// ============================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -41,39 +48,49 @@ Route::middleware('auth')->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-
-    // Admin Routes
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-        
-        Route::prefix('orders')->name('orders.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-            Route::get('/incoming', [App\Http\Controllers\Admin\OrderController::class, 'incoming'])->name('incoming');
-            Route::get('/confirmed', [App\Http\Controllers\Admin\OrderController::class, 'confirmed'])->name('confirmed');
-            Route::get('/completed', [App\Http\Controllers\Admin\OrderController::class, 'completed'])->name('completed');
-            Route::patch('/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('updateStatus');
-        });
-
-        Route::prefix('products')->name('products.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Admin\ProductController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\Admin\ProductController::class, 'create'])->name('create');
-            Route::post('/', [App\Http\Controllers\Admin\ProductController::class, 'store'])->name('store');
-            Route::get('/{product}/edit', [App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('edit');
-            Route::patch('/{product}', [App\Http\Controllers\Admin\ProductController::class, 'update'])->name('update');
-            Route::get('/export', [App\Http\Controllers\Admin\ProductController::class, 'export'])->name('export');
-        });
-
-        Route::prefix('reviews')->name('reviews.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('index');
-            Route::delete('/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('destroy');
-        });
-
-        Route::prefix('stock')->name('stock.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Admin\StockController::class, 'index'])->name('index');
-        });
-    });
 });
 
-Route::get('/shops/{shop:slug}', [App\Http\Controllers\ShopController::class, 'show'])->name('shops.show');
+// ============================================================
+// Admin Auth Routes (tidak pakai middleware apapun)
+// Login/logout admin harus bisa diakses tanpa login dulu
+// ============================================================
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [App\Http\Controllers\Admin\AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [App\Http\Controllers\Admin\AdminAuthController::class, 'login'])->name('login.post');
+    Route::post('/logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout'])->name('logout');
+});
+
+// ============================================================
+// Admin Routes (harus login sebagai admin via guard 'admin')
+// ============================================================
+Route::prefix('admin')->name('admin.')->middleware('isAdmin')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/incoming', [App\Http\Controllers\Admin\OrderController::class, 'incoming'])->name('incoming');
+        Route::get('/confirmed', [App\Http\Controllers\Admin\OrderController::class, 'confirmed'])->name('confirmed');
+        Route::get('/completed', [App\Http\Controllers\Admin\OrderController::class, 'completed'])->name('completed');
+        Route::patch('/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('updateStatus');
+    });
+
+    Route::prefix('products')->name('products.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\ProductController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\ProductController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\ProductController::class, 'store'])->name('store');
+        Route::get('/{product}/edit', [App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('edit');
+        Route::patch('/{product}', [App\Http\Controllers\Admin\ProductController::class, 'update'])->name('update');
+        Route::get('/export', [App\Http\Controllers\Admin\ProductController::class, 'export'])->name('export');
+    });
+
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('index');
+        Route::delete('/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('stock')->name('stock.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\StockController::class, 'index'])->name('index');
+    });
+});
 
 require __DIR__ . '/auth.php';
