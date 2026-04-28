@@ -1,4 +1,4 @@
-<?php
+profile<?php
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
@@ -64,9 +64,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('reviews')->name('reviews.')->group(function () {
-            Route::get('/incoming', [App\Http\Controllers\Admin\ReviewController::class, 'incoming'])->name('incoming');
             Route::get('/', [App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('index');
-            Route::patch('/{review}/approve', [App\Http\Controllers\Admin\ReviewController::class, 'approve'])->name('approve');
             Route::delete('/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('destroy');
         });
 
