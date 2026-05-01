@@ -16,7 +16,6 @@ Route::get('/dashboard', function () {
     return redirect()->route('home');
 })->middleware(['auth'])->name('dashboard');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/shops/{shop:slug}', [App\Http\Controllers\ShopController::class, 'show'])->name('shops.show');
 
 // ============================================================
 // User Routes (harus login sebagai user biasa)
@@ -28,15 +27,6 @@ Route::middleware('auth')->group(function () {
 
     // Review Routes
     Route::post('/products/{product}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
-
-    // Shop Routes
-    Route::get('/shop/create', [App\Http\Controllers\ShopController::class, 'create'])->name('shop.create');
-    Route::post('/shop', [App\Http\Controllers\ShopController::class, 'store'])->name('shop.store');
-
-    // Seller Routes
-    Route::prefix('seller')->name('seller.')->group(function () {
-        Route::resource('products', App\Http\Controllers\Seller\ProductController::class);
-    });
 
     // Cart Routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

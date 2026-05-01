@@ -105,14 +105,7 @@ const page = usePage();
                         >
                             <!-- Admin Navigation -->
                             <Link
-                                v-if="!$page.props.auth.user.shop"
-                                :href="route('shop.create')"
-                                class="bg-primary-50 text-primary-600 px-4 py-2 rounded-xl text-xs font-black tracking-widest hover:bg-primary-100 transition"
-                            >
-                                MULAI JUALAN
-                            </Link>
-                            <Link
-                                v-else
+                                v-if="$page.props.auth.admin"
                                 :href="route('admin.dashboard')"
                                 class="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-black tracking-widest hover:bg-gray-800 transition shadow-lg dark:bg-primary-600 dark:hover:bg-primary-700"
                             >
