@@ -17,6 +17,19 @@ const props = defineProps({
 
 const page = usePage();
 const auth = computed(() => page.props.auth);
+
+// Cek apakah user sedang login atau tidak
+const isLoggedIn = computed(() => !!auth.value?.user);
+
+// Label badge kecil di atas judul section
+const recLabel = computed(() =>
+    isLoggedIn.value ? "Algoritma Personalisasi" : "Pilihan Terlaris",
+);
+
+// Judul utama section rekomendasi
+const recTitle = computed(() =>
+    isLoggedIn.value ? "Rekomendasi Terbaik Untukmu" : "Produk Terpopuler",
+);
 </script>
 
 <template>
@@ -301,14 +314,15 @@ const auth = computed(() => page.props.auth);
                     <div>
                         <span
                             class="text-primary-600 font-black tracking-widest text-[10px] uppercase bg-primary-50 px-3 py-1 rounded-full"
-                            >Algoritma Personalisasi</span
                         >
+                            {{ recLabel }}
+                            <!-- sekarang dinamis dari computed -->
+                        </span>
                         <h2
                             class="text-3xl font-black text-gray-900 dark:text-gray-100 mt-3 italic"
                         >
-                            Rekomendasi
-                            <span class="text-primary-600">Terbaik</span>
-                            Untukmu
+                            {{ recTitle }}
+                            <!-- tidak perlu pecah jadi dua span lagi -->
                         </h2>
                     </div>
                 </div>

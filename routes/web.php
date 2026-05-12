@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
     // Review Routes
     Route::post('/products/{product}/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
 
+    // Recommendation Routes
+    Route::get('/recommendations', [App\Http\Controllers\RecommendationController::class, 'index'])->name('recommendations.index');
+    
     // Cart Routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');

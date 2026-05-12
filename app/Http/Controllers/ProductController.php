@@ -26,12 +26,16 @@ class ProductController extends Controller
             $orders = auth()->user()->orders()->latest()->get()->toArray();
         }
 
+        // Tentukan userId: pakai ID user yang login, atau 0 untuk guest.
+        // Service sudah handle userId yang tidak ada di matrix → fallback ke popular.
+        $userId = auth()->id() ?? 0;
+
         return Inertia::render('Products/Index', [
-            'products' => $products,
-            'categories' => Category::all(),
-            'filters' => $request->only(['category']),
-            'recommendations' => $recommendationService->getRecommendations(4),
-            'orders' => $orders,
+            'products'        => $products,
+            'categories'      => Category::all(),
+            'filters'         => $request->only(['category']),
+            'recommendations' => $recommendationService->getRecommendations($userId, 4),
+            'orders'          => $orders,
         ]);
     }
 
