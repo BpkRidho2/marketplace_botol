@@ -14,6 +14,12 @@ class RecommendationService
     private int $k = 5;
 
     /**
+     * Minimal produk yang harus sama-sama dirating dua user
+     * agar similarity dipakai sebagai neighbor.
+     */
+    private int $minCoRatedItems = 2;
+
+    /**
      * Metode utama yang dipanggil dari controller.
      * Menerima user_id dan limit, mengembalikan koleksi produk rekomendasi.
      */
@@ -91,9 +97,11 @@ class RecommendationService
             // Hanya hitung dot product pada produk yang sama-sama di-rating
             $commonProducts = array_intersect_key($userRatings, $otherRatings);
 
-            if (empty($commonProducts)) {
-                $similarities[$otherUserId] = 0;
-                continue;
+            $jumlahCoRatedItems = count($commonProducts);
+
+            if   ($jumlahCoRatedItems < $this->minCoRatedItems) {
+                    $similarities[$otherUserId] = 0;
+                    continue;
             }
 
             $dotProduct = 0;
